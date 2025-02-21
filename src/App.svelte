@@ -32,7 +32,6 @@
   import { routeMessage, newChat, deleteMessageFromConversation } from "./managers/conversationManager";
   import { copyTextToClipboard } from './utils/generalUtils';
   import { selectedModel, selectedVoice, selectedMode, isStreaming } from './stores/stores';
-  import { reloadConfig } from './services/openaiService';
   import { handleImageUpload, onSendVisionMessageComplete } from './managers/imageManager';
   import { base64Images } from './stores/stores';
   import { closeStream } from './services/openaiService';  
@@ -226,7 +225,7 @@ SmoothGPT
 {/if}
 </title>
 {#if $settingsVisible}
-<Settings on:settings-changed={reloadConfig} />
+<Settings />
 {/if}
 {#if $helpVisible}
 <Help />

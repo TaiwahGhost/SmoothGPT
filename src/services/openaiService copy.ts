@@ -1,8 +1,8 @@
 import { get, writable } from 'svelte/store';
-import { Configuration, OpenAIApi } from "openai";
-import type { ChatCompletionRequestMessage,  } from "openai";
-import type  { ChatCompletionRequestMessageRoleEnum } from "openai";
-import { apiKey} from "../stores/stores";
+//import { Configuration, OpenAIApi } from "openai";
+//import type { ChatCompletionRequestMessage,  } from "openai";
+//import type  { ChatCompletionRequestMessageRoleEnum } from "openai";
+//import { apiKey} from "../stores/stores";
 import { selectedModel, selectedVoice, audioUrls, selectedSize, selectedQuality, defaultAssistantRole, isStreaming, streamContext } from '../stores/stores';
 import { conversations, chosenConversationId, combinedTokens, userRequestedStreamClosure } from "../stores/stores";
 import { setHistory, countTokens, estimateTokens, displayAudioMessage, cleanseMessage } from '../managers/conversationManager';
@@ -12,7 +12,6 @@ import { saveAudioBlob, getAudioBlob } from '../idb';
 import { onSendVisionMessageComplete } from '../managers/imageManager';
 
 let configuration: Configuration | null = null;
-let openai: OpenAIApi | null = null;
 
   // A global variable to hold the stream source  
   let globalSource: EventSource | null = null;  
@@ -67,28 +66,9 @@ const errorMessage: ChatCompletionRequestMessage[] = [
   },
 ];
 
-// We don't need init OpenAI API 
-export function initOpenAIApi(): void {
-  const key = get(apiKey);
-  if (key) {
-    configuration = new Configuration({ apiKey: key });
-    openai = new OpenAIApi(configuration);
-    console.log("OpenAI API initialized.");
-  } else {
-    console.warn("API key is not set. Please set the API key before initializing.");
-  }
-}
 
-export function getOpenAIApi(): OpenAIApi {
-  if (!openai) {
-    throw new Error("OpenAI API is not initialized. Please call initOpenAIApi with your API key first.");
-  }
-  console.log("OpenAI API retrieved.");
-  return openai;
-}
-
+//Here we can call backend. 
 export async function createChatCompletion(model: string, messages: ChatCompletionRequestMessage[]): Promise<any> {
-  const openaiClient = getOpenAIApi();
   console.log("Sending chat completion request...");
   try {
     const response = await openaiClient.createChatCompletion({
@@ -103,15 +83,6 @@ export async function createChatCompletion(model: string, messages: ChatCompleti
   }
 }
 
-export function isConfigured(): boolean {
-  console.log("Checking if OpenAI API is configured.");
-  return configuration !== null && get(apiKey) !== null;
-}
-
-export function reloadConfig(): void {
-  initOpenAIApi(); 
-  console.log("Configuration reloaded.");
-}
 
 export async function sendRequest(msg: ChatCompletionRequestMessage[], model: string = get(selectedModel)): Promise<any> {
 
